@@ -80,7 +80,10 @@ class AdminScheduleController extends Controller
      */
     public function edit($id)
     {
-        return view ('admin.schedule.edit');
+        $session = ScheduledSession:: find($id);
+        $time = Carbon::createFromFormat('Y-m-d H:i:s', $session->scheduled_time)->format('H:i');
+    
+        return view('admin.schedule.edit')->with('session', $session)->with('time', $time);
     }
 
     /**
@@ -92,7 +95,24 @@ class AdminScheduleController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validatedData = $request->validate([
+            "name" => "required|max:50",
+            "phone" => "required|regex:/^08\d{8}$/i",
+            "service" => ["required", Rule::in(['Basic Polish', 'Shellac', 'Acrylic'])],
+            "scheduled_time" => "date_format:d.m.Y|required",
+            "time" => "date_format:H:i"
+        ]);
+
+        $date = $validatedData['scheduled_time'] . " " . $validatedData['time'];
+        $entry = ScheduledSession::find($id);
+        $entry->name = $validatedData['name'];
+        $entry->phone = $validatedData['phone'];
+        $entry->service = $validatedData['service'];
+        $entry->scheduled_time = new Carbon($date);
+        $entry->name = $validatedData['name'];
+        $entry->save();
+
+        return redirect()->route('schedule.index');
     }
 
     /**
