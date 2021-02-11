@@ -20,7 +20,7 @@ class AdminScheduleController extends Controller
      */
     public function index()
     {
-        $sessions = ScheduledSession::orderByDesc('id')->paginate(15);
+        $sessions = ScheduledSession::orderBy('scheduled_time')->paginate(15);
         return view ('admin.schedule.index')->with('sessions', $sessions);
     }
 

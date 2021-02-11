@@ -10004,6 +10004,17 @@ h3 {
     border-color: #dee2e6;
   }
 }
+@font-face {
+  font-family: "Broadway Script";
+  src: url("/fonts/Broadway-Script.otf");
+}
+.navbar-brand {
+  font-family: "Broadway Script", sans-serif !important;
+  text-transform: unset !important;
+  font-size: 34px !important;
+  text-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+}
+
 .field-group {
   margin-top: 1em;
 }
