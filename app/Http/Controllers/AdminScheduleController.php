@@ -103,11 +103,15 @@ class AdminScheduleController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $session = ScheduledSession:: find($id);
+        $session->delete();
+
+        return redirect()->route('schedule.index');
     }
 
     public function delete($id)
     {
-        return view ('admin.schedule.delete');
+        $session = ScheduledSession:: find($id);
+        return view ('admin.schedule.delete')-> with ('session', $session );
     }
 }
