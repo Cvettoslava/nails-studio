@@ -1,62 +1,85 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+Курсов проект по "PHP базирани работни рамки"
+от Цветослава Радославова, Фак.№ 1809013484
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Тема на курсовия проект:
 
-## About Laravel
+# Електронен графика за запазване на часове за процедура "маникюр"
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### Описание:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Уеб приложението се състои от публична част, която е предназначена за администратори и неадминистратори, в която се виждат последно добавените часове в графика, съдържа още login и register форми, чрез които след регистрация и вписване приложението предоставя админ панел, откъдето може да се премине към страницата на самия график. Там могат да се видят всички добавени часове за конкретните услуги на съотвените лица (име, номер). Може да се създават нови записи, като всички данни са валидирани и при въвеждане на невалидни данни страницата се презарежда с възможност за ново коректно въвеждане. След добавяне на данни, записите се сортират по дата и час, тоест можем да видим първо най-скорошните запазени часове. Има възможност за редактиране и изтриване на записи.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Разбработка на проекта:
 
-## Learning Laravel
+### БАЗА ДАННИ:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Проектът разполага с база данни, състояща се от 5 таблици:
+`failed_jobs`
+`migrations`
+`password_resets`
+`scheduled_sessions`
+`users`
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### МИГРАЦИИ:
 
-## Laravel Sponsors
+Както и с 3 миграции по подразбиране + още 2, създадени в хода на проекта:
+"`2021_02_10_130601_add_admin_field_to_users_table.php`"
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+"`2021_02_10_141225_create_scheduled_sessions_table.php`"
 
-### Premium Partners
+И двете разполагат с 2 метода up и down, като методът `up` на миграцията
+`add_admin_field_to_users_table.php` добавя още една колона в таблицата `users`, която съдържа информация дали регистрираният потребител е админ или не. А `down` методът отменя направеното в `up` метода.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/)**
-- **[OP.GG](https://op.gg)**
+В метода `up` на миграция `create_scheduled_sessions_table.php` се създава таблица, в която се добавя всеки новосъздаден запис в графика. Методът `down` го отменя.
 
-## Contributing
+За проверката дали даден потребител е админ или не, се грижи контролера `AdminMiddleware`, който потвърждава, че потребителят на приложението е удостоверен. Ако потребителят не е удостоверен, контролерът ще го пренасочи към екрана за вход на приложението. Ако обаче потребителят е удостоверен, ще позволи на заявката да продължи по-нататък в приложението.
+Към базата данни имаме създаден и един seeder, в който дефинираме 2 масива: с произволни имена на клиенти и възможните услуги, като целта на seeder-а е да запълни таблицата с произволни записи.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### КОНТРОЛЕРИ:
 
-## Code of Conduct
+`AdminController`: има конструктор, в който се задава, че контролерът използва `AdminMiddleWare`, който прави проверката дали потребителя е админ, и метод, който връща view за `admin.dashboard`.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+#### AdminScheduleController
 
-## Security Vulnerabilities
+`AdminScheduleController`: съдържа функции за оперирането със записи в графика.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+`function index()` - Сортира записите по дата и време и връща view-то на страницата, където се намира графика.
 
-## License
+`function create()` - Връща view-то на страницата за създаване на нов запис.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+`function store()` - Задава правила за валидни данни и ако всички данни за валидни запазва новия запис, след което ни пренасочва към view-то на страницата, където се намира графика.
+
+`function edit($id)` - взема id-то на записа, който желаем да редактираме, след което връща view на конкретния запис като използва класа Carbon за показване на създадените в записа данни.
+
+`function update()` - прави същото като `function store()` с тази разлика, че приема два параметъра - Request и id-то на записа, който актуализираме като връща вече актуализираното view.
+
+`function destroy($id)` - търси записа по id, извиква функацията `delete()` и връща view-to на страницата, където е графика.
+
+`function delete($id)` - търси записа по id и връща view-то на `delete` страницата.
+
+#### HomeController:
+
+`function index()`- връща view-то на home страницата, която дава информация, че потребителят/администраторът се е вписал успешно.
+`function welcome()`- взема сортирани по `scheduled_time` последните 6 записа и връща view-то на страницата `welcome`.
+
+Всички контролери наследяват класа `Controller`, който наследява `BaseController`.
+
+### МОДЕЛИ:
+
+`User`
+
+`ScheduledSession`
+
+### ROUTES:
+
+`Route::get('/', [App\Http\Controllers\HomeController::class,'welcome'])->name ('welcome');` - за достъп до маршрута `[App\Http\Controllers\HomeController::class,'welcome']`, тоест view-то на страницата "welcome" от контролера `HomeController` се използва на пътя "/".
+
+`Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->middleware('auth')->name('home');` - за достъп до маршрута
+`[App\Http\Controllers\HomeController::class, 'index']`, тоест view-то на страницата "index" в контролера `HomeController` се използва за "/home", като използва auth middleware за проверка дали потребителя се е логнал в системата.
+
+`Route::get('/admin',[App\Http\Controllers\AdminController::class, 'dashboard'])->name('admin.dashboard');` - за достъп до маршрута `[App\Http\Controllers\AdminController::class, 'dashboard']`, тоест view-то на страницата "dashboard" от `AdminController` се използва "/admin".
+
+`Route::resource('/admin/schedule', App\Http\Controllers\AdminScheduleController::class);` - регистрира маршрут на ресурс(в случая schedule, т.е. графика), който сочи към контролера `AdminScheduleController`, който съдържа методите за всяка от наличните операции с ресурса.
+
+`Route::get('/admin/schedule/{schedule}/delete', [App\Http\Controllers\AdminScheduleController::class, 'delete'])->name('schedule.delete');` - за достъп до маршрута [App\Http\Controllers\AdminScheduleController::class, 'delete'], тоест view-то на страницата "delete" от AdminScheduleController се използва "/admin/schedule/{schedule}/delete".
+Този път е допълнение на ресурсния контролер и представлява страница за потвърждение преди изтриването на записа.
