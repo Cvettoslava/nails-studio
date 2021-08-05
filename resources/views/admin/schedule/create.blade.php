@@ -24,18 +24,26 @@
         <input required class="form-control" type="text" name="phone" placeholder="08...">
       </div>
       <div class="field-group">
-        <div><label for="service">Service</label></div>
-        <div class="btn-group btn-group-toggle" data-toggle="buttons">
-          <label class="btn btn-primary">
-            <input value="Basic Polish" type="radio" name="service" id="option1" autocomplete="off" checked=""> Basic Polish
-          </label>
-          <label class="btn btn-primary">
-            <input value="Shellac" type="radio" name="service" id="option2" autocomplete="off"> Shellac
-          </label>
-          <label class="btn btn-primary active">
-            <input value="Acrylic" type="radio" name="service" id="option3" autocomplete="off"> Acrylic
-          </label>
-        </div>
+        <div><label for="service_id">Service</label></div>
+        <select class="form-select" name = 'service_id' id="service-select">
+            <option selected>Please select</option>
+                          
+        @foreach($services as $service) {
+        
+            <option class="service-option" value="{{$service->id}}">{{$service->name}} - {{$service->price}}$</option>
+          
+          @endforeach
+          </select>        
+      </div>
+      <div class="field-group">
+        <div><label for="specialist_id">Specialist</label></div>
+        <select class="form-select" name='specialist_id' id="specialist-select">
+            <option selected>Please select</option>
+            @foreach($specialists as $spec)
+              <option value="{{$service->id}}">{{$spec->name}}</option>
+            @endforeach
+          </select>
+            
       </div>
       <div class="field-group">
         <label for="scheduled_time">Select date</label>
@@ -104,6 +112,40 @@
   window.addEventListener('load', function() {
     $('.datetimepicker').datepicker({format: 'dd.mm.yyyy'});
   })
+
+  // get the specialists from laravel
+   const specialists = {!! json_encode($specialists) !!};
+
+   // initialize service select and specialist select DOM nodes (<select name="services"> and <select name="specialists>)
+   const serviceSelect = document.querySelector("#service-select");
+   const specialistSelect = document.querySelector('#specialist-select')
+
+   // function gets called when the value of the <select name="service"> changes
+   serviceSelect.addEventListener("change", function(event) {
+     let clickedServiceId = event.target.value; // Get the ID of the selected service
+
+     // Get a list of specialists that offer that service
+     let specialistsThatOfferSelectedService = specialists.filter(function(specialist) {
+       const services = specialist.services;
+
+       for(let i = 0; i < services.length; i++) {
+         if(services[i].id === Number(clickedServiceId))
+          return true;
+       }
+
+       return false;
+     });
+
+     // Set the content of the <select name="specialists"> to only show those who offer that service
+     specialistSelect.innerHTML = `
+      <option selected>Please select</option>
+      ${specialistsThatOfferSelectedService.map(specialist => {
+        return '<option value="' + specialist.id + '">' + specialist.name + "</option>"
+      }).join("")}
+     `
+   });
+
+   console.log(specialists);
 </script>
  
 @endsection

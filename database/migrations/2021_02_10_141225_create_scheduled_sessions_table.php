@@ -17,7 +17,7 @@ class CreateScheduledSessionsTable extends Migration
             $table->id();
             $table->string('name', 50);
             $table->string('phone', 12);
-            $table->enum('service', ['Basic Polish', 'Shellac', 'Acrylic']);
+            $table->integer('service_id');
             $table->dateTime('scheduled_time');
             $table->timestamps(); # created_at, updated_at
         });

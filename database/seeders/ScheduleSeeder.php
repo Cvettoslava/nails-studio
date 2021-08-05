@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use \App\Models\ScheduledSession;
 use Carbon\Carbon;
+use \App\Models\Service;
+use \App\Models\Specialist;
 
 class ScheduleSeeder extends Seeder
 {
@@ -15,17 +17,17 @@ class ScheduleSeeder extends Seeder
      */
     public function run()
     {
-        $users = ["Катя", "Ивана", "Дияна", "Силвия", "Славена"];
-        $services = ['Basic Polish', 'Shellac', 'Acrylic'];
+       /* $clients = ["Катя", "Ивана", "Дияна", "Силвия", "Славена"];
+        $services = Service::all('name');//['Basic Polish', 'Shellac', 'Acrylic'];
+        $specialists = Specialist::all('name');
         
-        foreach($users as $user) {
+        
             $session = new ScheduledSession();
-            $session->name = $user;
+            $session->name = $clients[rand(0, 4)];
             $session->phone = "08" . rand(7, 9) . rand(1000000, 9999999);
-            $session->service = $services[rand(0, 2)];
+            $session->service_id = $services[rand(0, 7)];
             $session->scheduled_time = new Carbon(rand(1, 28). '.02.2021 '.rand(8,17).":00");
-            $session->save();
-        }
-        //
+            $session->specialist_id = $specialists[rand(0, 4)];
+            $session->save();*/
     }
 }

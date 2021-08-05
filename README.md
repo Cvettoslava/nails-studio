@@ -72,7 +72,7 @@
 
 ### ROUTES:
 
-`Route::get('/', [App\Http\Controllers\HomeController::class,'welcome'])->name ('welcome');` - за достъп до маршрута `[App\Http\Controllers\HomeController::class,'welcome']`, тоест view-то на страницата "welcome" от контролера `HomeController` се използва на пътя "/".
+`Route::get('/', [App\Http\Controllers\HomeController::class,'welcome'])->name ('welcome');` - за достъп до маршрута `[App\Http\Controllers\HomeController::class,'welcome']`, тоест view-то на страницата "welcome" от контролера `HomeController` се използва пътя "/".
 
 `Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->middleware('auth')->name('home');` - за достъп до маршрута
 `[App\Http\Controllers\HomeController::class, 'index']`, тоест view-то на страницата "index" в контролера `HomeController` се използва за "/home", като използва auth middleware за проверка дали потребителя се е логнал в системата.
